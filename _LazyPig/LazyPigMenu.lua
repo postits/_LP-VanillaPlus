@@ -27,6 +27,13 @@ local CheckBoxTables = {
 		[3] = { "LazyPigCheckbox122", "Pass" }
 	},
 
+	["VPlus Buff Remover"] = {
+		[0] = "LazyPigCheckboxGroupVPlusBuffRemover",
+		[1] = { "LazyPigCheckbox130", "Reckoning ICD" },
+		[2] = { "LazyPigCheckbox131", "BG AFK" },
+		[3] = { "LazyPigCheckbox132", "BG AZ Coins" },
+	},
+
 	["World Chat Mute"] = {
 		[0] = "LazyPigCheckboxGroupWorldChatMute",
 		[1] = { "LazyPigCheckbox20", "Dungeons" },
@@ -154,7 +161,7 @@ function LazyPig_CreateOptionsFrame()
 	frame:SetScale(.81)
 
 	frame:SetWidth(480)
-	frame:SetHeight(485)
+	frame:SetHeight(540)
 	
 	frame:SetPoint("TOPLEFT", nil, "TOPLEFT", 250, -50)
 	frame:SetBackdrop( {
@@ -259,10 +266,13 @@ function LazyPig_CreateOptionsFrame()
 	frame.cbgroup_nameplates = CheckBoxGroup(frame, 20, -410, str, CheckBoxTables[str])
 	
 	local str = "VPlus Roll Automation"
-	frame.cbgroup_nameplates = CheckBoxGroup(frame, 250, -410, str, CheckBoxTables[str])	
+	frame.cbgroup_nameplates = CheckBoxGroup(frame, 250, -298, str, CheckBoxTables[str])
+
+	local str = "VPlus Buff Remover"
+	frame.cbgroup_vplusbuffremover = CheckBoxGroup(frame, 250, -240, str, CheckBoxTables[str])
 	
 	local str = "Smart Salvation Remover"
-	frame.cbgroup_salvationremover = CheckBoxGroup(frame, 250, -195, str, CheckBoxTables[str])
+	frame.cbgroup_salvationremover = CheckBoxGroup(frame, 250, -192, str, CheckBoxTables[str])
 	
 	local str = "Chat Filter"
 	frame.cbgroup_salvationremover = CheckBoxGroup(frame, 250, -120, str, CheckBoxTables[str])
@@ -271,7 +281,7 @@ function LazyPig_CreateOptionsFrame()
 	frame.cbgroup_groupinvite = CheckBoxGroup(frame, 250, -45, str, CheckBoxTables[str])
 
 	local str = "Single Choice Rules"
-	frame.cbgroup_singlechoise = CheckBoxGroup(frame, 250, -242, str, CheckBoxTables[str])
+	frame.cbgroup_singlechoise = CheckBoxGroup(frame, 250, -360, str, CheckBoxTables[str])
 
 	return frame
 

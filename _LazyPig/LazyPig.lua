@@ -34,7 +34,10 @@ LPCONFIG = {
 	SHIFTSPLIT = true, 
 	REZ = true, 
 	GOSSIP = true, 
-	SALVA = false
+	SALVA = false,
+	RECKICD = false,
+	BGAFK = false,
+	BGCOIN = false
 }
 
 BINDING_HEADER_LP_HEADER = "_LazyPig";
@@ -168,7 +171,12 @@ local LazyPigMenuStrings = {
 		[112]= "Pass",
 		[120]= "Need",
 		[121]= "Greed",
-		[122]= "Pass"
+		[122]= "Pass",
+
+
+		[130]= "Reckoning ICD",
+		[131]= "BG AFK",
+		[132]= "BG AZ Coins"
 }
 
 function LazyPig_OnLoad()
@@ -353,6 +361,7 @@ function LazyPig_OnUpdate()
 	end
 	
 	LazyPig_CheckSalvation();
+	LazyPig_CheckVPlusBuffs();
 	ScheduleButtonClick();
 	ScheduleFunctionLaunch();
 	ScheduleItemSplit();
@@ -1811,7 +1820,11 @@ function LazyPig_GetOption(num)
 	or num == 120 and LPCONFIG.VPlus == 1
 	or num == 121 and LPCONFIG.VPlus == 2
 	or num == 122 and LPCONFIG.VPlus == 0
-	
+
+	or num == 130 and LPCONFIG.RECKICD
+	or num == 131 and LPCONFIG.BGAFK
+	or num == 132 and LPCONFIG.BGCOIN
+
 	or nil then
 		this:SetChecked(true);
 	else
@@ -2041,10 +2054,16 @@ function LazyPig_SetOption(num)
 		if not checked then LPCONFIG.VPlus = nil end
 		LazyPigMenuObjects[120]:SetChecked(nil)
 		LazyPigMenuObjects[121]:SetChecked(nil)		
-	else
-		--DEFAULT_CHAT_FRAME:AddMessage("DEBUG: No num assigned - "..num)
+	elseif num == 130 then
+		LPCONFIG.RECKICD = true
+		if not checked then LPCONFIG.RECKICD = nil end
+	elseif num == 131 then
+		LPCONFIG.BGAFK = true
+		if not checked then LPCONFIG.BGAFK = nil end
+	elseif num == 132 then
+		LPCONFIG.BGCOIN = true
+		if not checked then LPCONFIG.BGCOIN = nil end
 	end
-	--DEFAULT_CHAT_FRAME:AddMessage("DEBUG: Num chosen - "..num)
 end
 
 function LazyPig_RollLootOpen()
@@ -2333,9 +2352,33 @@ function LazyPig_Duel_EFC()
 	end	
 end
 
+function LazyPig_CheckVPlusBuffs()
+	if LPCONFIG.RECKICD then
+		LazyPig_CancelBuffByID(34796, "Reckoning ICD")
+	end
+	if LPCONFIG.BGAFK then
+		LazyPig_CancelBuffByID(34856, "BG AFK")
+	end
+	if LPCONFIG.BGCOIN then
+		LazyPig_CancelBuffByID(35318, "BG AZ Coins")
+		LazyPig_CancelBuffByID(35319, "BG AZ Coins")
+	end
+end
 
-function aaa()
-PlayerFrame:Hide()
+function LazyPig_CancelBuffByID(id, label)
+	local counter = 0
+	while GetPlayerBuff(counter) >= 0 do
+		local index = GetPlayerBuff(counter)
+		LazyPig_Buff_Tooltip:SetPlayerBuff(index)
 
-
+		-- Use the hidden tooltip to check for the specific Spell ID
+		-- Note: Some private server APIs allow 'GetPlayerBuffID(index)'
+		-- If your server doesn't support that, we match via the label/name
+		if GetPlayerBuffID and GetPlayerBuffID(index) == id then
+			CancelPlayerBuff(index)
+			-- UIErrorsFrame:AddMessage(label.." Removed")
+			return
+		end
+		counter = counter + 1
+	end
 end
